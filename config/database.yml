@@ -1,0 +1,45 @@
+# SQLite por defecto (puedes dejarlo si lo usas en otros entornos)
+default: &default
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
+# Configuración base para MySQL
+default_mysql: &default_mysql
+  adapter: mysql2
+  encoding: utf8mb4
+  collation: utf8mb4_unicode_ci
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+  username: debian
+  password: ruby1
+  host: 127.0.0.1
+  port: 3306
+
+# Añade esta sección para que funcione en desarrollo
+development:
+  <<: *default_mysql
+  database: RoR_development
+
+# Test puede seguir usando SQLite si lo prefieres
+test:
+  <<: *default
+  database: storage/test.sqlite3
+
+# Producción con SQLite (puedes migrarlo a MySQL si lo deseas)
+production:
+  primary:
+    <<: *default
+    database: storage/production.sqlite3
+  cache:
+    <<: *default
+    database: storage/production_cache.sqlite3
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *default
+    database: storage/production_queue.sqlite3
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: storage/production_cable.sqlite3
+    migrations_paths: db/cable_migrate
